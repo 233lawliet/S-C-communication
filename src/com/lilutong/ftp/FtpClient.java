@@ -80,17 +80,69 @@ public class FtpClient   extends  FTPClient {
 	
 	
 	
+	public String  getListFile() throws IOException {
+		FTPFile[]   files=this.ftpClient.listFiles();
+		StringBuffer  dirstringBuffer  =new StringBuffer("路径\n");
+		StringBuffer  filestringBuffer  =new StringBuffer("文件\n");
+		String  stringBuffer  =new String();
+		
+		for(FTPFile  ftpFile:  files){
+		
+			
+			if(ftpFile.getType()==1) {
+				dirstringBuffer.append(ftpFile.getName()+"\n");
+			}else  {
+				filestringBuffer.append(ftpFile.getName()+"\n");
+			}
+			stringBuffer=dirstringBuffer.toString()+filestringBuffer.toString();
+			
+		}
+		
+		System.out.println(stringBuffer);
+		
+		
+		
+		return stringBuffer;
+		
+	}
+	
+	
+	public String   getPath() throws IOException {
+		String[]   string =this.ftpClient.doCommandAsStrings("pwd", null);
+		return  string[0].substring(3);
+	}
+	
+	public String   changePath(String path) throws IOException {
+		boolean   power= this.ftpClient.changeWorkingDirectory(path);
+		if(power==true) {
+			return  "进入目录"+this.getPath();
+		}else {
+			return "无权限访问"+this.getPath();
+		}
+		
+		
+	}
+	
 	
 	public  static void  main(String   args[]) throws IOException {
 		FtpClient  ftpClientMain=new FtpClient();
 		FTPClient ftpClient=ftpClientMain.getClient();
 	    
-	    ftpClientMain.download("test.txt");
+	    /*ftpClientMain.download("test.txt");
 	   
 	    ftpClientMain.upload("text.txt");
-	    }
+	   */ 
+		
+		ftpClientMain.getPath();
+		
+		System.out.println(ftpClientMain.changePath("/root"));
+
+		
+		ftpClientMain.getListFile();
+		}
 		
 	
+	   
 	
 	}
 
