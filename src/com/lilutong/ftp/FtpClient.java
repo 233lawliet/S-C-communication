@@ -19,6 +19,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.experimental.theories.Theories;
 
+import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
+
 
 public class FtpClient   extends  FTPClient {
 
@@ -49,6 +51,15 @@ public class FtpClient   extends  FTPClient {
 	
 	
 	
+	public String systemCmd(String cmd) throws IOException {
+		String[]  strings  =this.ftpClient.doCommandAsStrings(cmd ,null);
+		
+		
+		return strings[0];
+	}
+	
+	
+	
 	public  boolean    upload(String filename) throws IOException {
 		String  path  =this.getPorperties().getProperty("localpath")+File.separator+filename;
 		File  file =new File(path);
@@ -57,7 +68,6 @@ public class FtpClient   extends  FTPClient {
 		
 
 		inputStream.close();
-		this.ftpClient.disconnect();
 		
 		return   true;
 	}
@@ -74,7 +84,6 @@ public class FtpClient   extends  FTPClient {
 		}
 		inputStream.close();
 		outputStream.close();
-		this.ftpClient.disconnect();
 		return  true;
 	}
 	
@@ -82,7 +91,7 @@ public class FtpClient   extends  FTPClient {
 	
 	public String  getListFile() throws IOException {
 		FTPFile[]   files=this.ftpClient.listFiles();
-		StringBuffer  dirstringBuffer  =new StringBuffer("路径\n");
+		StringBuffer  dirstringBuffer  =new StringBuffer("目录\n");
 		StringBuffer  filestringBuffer  =new StringBuffer("文件\n");
 		String  stringBuffer  =new String();
 		
@@ -98,7 +107,6 @@ public class FtpClient   extends  FTPClient {
 			
 		}
 		
-		System.out.println(stringBuffer);
 		
 		
 		
@@ -117,7 +125,7 @@ public class FtpClient   extends  FTPClient {
 		if(power==true) {
 			return  "进入目录"+this.getPath();
 		}else {
-			return "无权限访问"+this.getPath();
+			return "无权限访问"+path;
 		}
 		
 		
@@ -135,7 +143,7 @@ public class FtpClient   extends  FTPClient {
 		
 		ftpClientMain.getPath();
 		
-		System.out.println(ftpClientMain.changePath("/root"));
+		//System.out.println(ftpClientMain.changePath("/root"));
 
 		
 		ftpClientMain.getListFile();
