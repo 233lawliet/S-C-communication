@@ -7,7 +7,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
-import javax.swing.plaf.TreeUI;
 
 public class Client {
 
@@ -35,13 +34,12 @@ public class Client {
 			putinfo=scanner.nextLine();
 			outputStream.write(putinfo.getBytes());
 			outputStream.flush();
-			
-			
-			
+		
 			//获取信息
 			count =inputStream.read(bytes);
 			getinfo=new  String(bytes,0, count);
-			System.out.println("服务器说了"+getinfo);
+			System.out.println(getinfo);
+			
 			
 			
 		}

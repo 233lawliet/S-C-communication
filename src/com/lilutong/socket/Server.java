@@ -3,69 +3,83 @@ package com.lilutong.socket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
+import org.junit.runner.notification.RunListener.ThreadSafe;
+
+import jdk.internal.dynalink.beans.StaticClass;
+
 
 public class Server {
 
 	
+	ServerSocket  serverSocket =null;
+	InetSocketAddress  inetSocketAddress  =null;
+	List<Thread> threads=null;  //未用到
+	static List<Socket> sockets=null;
+	
+	Integer count =null;
+	
+	public  Server() throws IOException {
+		serverSocket=new ServerSocket();
+		inetSocketAddress=new InetSocketAddress("localhost", 10086);
+	    serverSocket.bind(inetSocketAddress);
+		
+	    threads=new ArrayList<Thread>();
+		sockets=new ArrayList<Socket>();
+	    count=0;
+		
+	}
 	
 	
 	
-	public   static   void main(String    args[]) throws IOException {
-		
-		//创建ServerSocter
-		ServerSocket  serverSocket  =new ServerSocket();
-		InetSocketAddress  inetSocketAddress  =new InetSocketAddress("localhost", 10086);
-		serverSocket.bind(inetSocketAddress);
+	
+	public   static   void main(String    args[]) throws IOException{
 		
 		
-		//监听
-		Socket  socket  =serverSocket.accept();
 		
-		//创建inputStream   outputStream
-		InputStream   inputStream =socket.getInputStream();
-	    OutputStream  outputStream =socket.getOutputStream();
 		
-		//创建  Scanner
-		
-	    Scanner  scanner  =new Scanner(System.in);
-	    String   getinfo=null;
-	    String   putinfo=null;
+		Server server=new Server();
+		System.out.println("*********服务器即将启动,等待用户加入");
 	    
-	    
-	    
-	    //循环
-	    byte[] bytes=new byte[1024];
-	    int count=-1;  //计算数据长度   并且读取数据
-	    while(true) {
-		    /**
-			 * 1.接受对方的数据 
-			 * 2.打印对方的数据
-			 * 3.输入自己的数据
-			 * 4.将录入的数据发送给对方
-			 */
+			
 		
-	    	
-	  
-	    	Cmd  cmd =new  Cmd();
-	    	//获取用户的信息
-	    	count=inputStream.read(bytes);
-	        getinfo=new String(bytes, 0, count);
-	        
-		    System.out.println("客户端说了："+getinfo);
-		 		    
-		    //录入数据  信息
-		    //putinfo=scanner.nextLine();
-		    outputStream.write(cmd.judge(getinfo).getBytes());
-		    outputStream.flush();
-	    
-	    }
+			
+			
+		while(true) {
+				
+			Socket  socket=null;		
+			socket=server.serverSocket.accept();
+			server.sockets.add(socket);
+			server.count++;
+			
+			InetAddress  inetAddress=socket.getInetAddress();
+			System.out.println("*********第"+server.count+"位用户加入聊天室，其IP-"+inetAddress);
+			
+			
+			SocketThread  socketThread=new SocketThread(socket);
+			socketThread.setSockets(sockets);
+			Thread  thread=new Thread(socketThread);
+			server.threads.add(thread);
+			thread.start();
+			
+				
+				
+    	}
+			
+			
+		
+		
+		
+		
+		
 	
 	}
 

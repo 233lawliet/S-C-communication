@@ -1,12 +1,10 @@
-package com.lilutong.socket;
+package com.lilutong.ftp;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.junit.Test;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 
 import com.lilutong.ftp.FtpClient;
 
@@ -83,7 +81,7 @@ public class Cmd {
 		}else if(cmd.substring(0, 8).equals("download")) {
 			return this.download(cmd.substring(8).trim());
 		}else {
-			return  "«Î÷ÿ–¬ ‰»Î!";
+			return  "cmd";
 		}
 		
 		
